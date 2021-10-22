@@ -1,0 +1,13 @@
+version: '3'
+services:
+  rene:
+    build: .
+    working_dir: '/rene'
+    volumes:
+      - ./src:/rene/src
+      - ./data:/rene/data
+    environment:
+      - 'PYTHONPATH=/rene/src'
+    entrypoint: streamlit run src/st_rene.py   
+    ports:
+      - "8501:8501"

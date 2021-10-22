@@ -12,7 +12,7 @@ def build_rene(config):
     with open(config['news_file'], 'r') as f:
         news_dict = json.loads(f.read())
 
-    with open('user_history.json', 'r') as f:
+    with open(config['user_history'], 'r') as f:
         users = json.loads(f.read())
 
     meta_info = []

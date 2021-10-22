@@ -29,4 +29,4 @@ def main(config):
 
 
 if __name__ == '__main__':
-    main(yaml_load('config.yml'))
+    main(yaml_load('data/config.yml'))
