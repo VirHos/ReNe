@@ -1,6 +1,27 @@
 import faiss
 import yaml
 import json
+import tensorflow as tf
+import pickle
+
+def pickle_load(path):
+    with open(path, 'rb') as f:
+        pkl = pickle.load(f)
+    return pkl
+
+def pickle_dump(o, fpath: str):
+    with open(fpath, "wb") as fi:
+        pickle.dump(o, fi, protocol=pickle.HIGHEST_PROTOCOL)
+    return 1
+
+def load_graph(frozen_graph_filename):
+    with tf.gfile.GFile(frozen_graph_filename, "rb") as f:
+        graph_def = tf.GraphDef()
+        graph_def.ParseFromString(f.read())
+
+    with tf.Graph().as_default() as graph:
+        tf.import_graph_def(graph_def)
+    return graph
 
 def json_load(fp):
     with open(fp, 'r') as f:

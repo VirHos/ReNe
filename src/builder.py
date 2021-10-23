@@ -1,20 +1,26 @@
-import json
-
 import numpy as np
-from encoder import Encoder
+from tf_encoder.cache_encoder import get_nlu_executor, CacheEncoder
+from encoder import SimpleEncoder
 from recommender import Recommender
 from retriever import Retriever
 from user_processor import UserProcessor
-from utils import *
+from utils import json_load, yaml_load, pickle_load, get_meta_str, build_faiss_index
 from filters import ComplexFilter
 
 
-def build_rene(config):
-    with open(config['news_file'], 'r') as f:
-        news_dict = json.loads(f.read())
+def build_rene(config, stub=False):
+    news_dict = json_load(config['news_file'])
 
-    with open(config['user_history'], 'r') as f:
-        users = json.loads(f.read())
+    users = json_load(config['user_history'])
+
+    cache = pickle_load(config['cache_path'])
+    
+    if stub:
+        encoder = SimpleEncoder(cache['text'], cache['embs'])
+    else:
+        encoder = get_nlu_executor(yaml_load(config['model_config']))
+        encoder = CacheEncoder(encoder, cache['text'], cache['embs'])
+    
 
     meta_info = {}
     output_storage = {}
@@ -35,8 +41,6 @@ def build_rene(config):
     user_history_idx = {k: [url_to_index[i] for i in v] for k,v in users.items()}
 
     user_pr = UserProcessor(news_dict, user_history_idx, meta_info, output_storage, url_to_index)
-
-    encoder = Encoder(0,0)
 
     news = np.array([meta_info[idx] for idx in output_idx_storage])
     news_embs = encoder(news)

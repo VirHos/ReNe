@@ -11,7 +11,8 @@ class ApiHandler:
     def get_news(self):
         user_id = str(request.args.get('user_id', '1'))
         n_news = int(request.args.get('n_news', 5))
-        out_json = self.rene.get_news(user_id, n_news)
+        to_filter = bool(request.args.get('filter', True))
+        out_json = self.rene.get_news(user_id, n_news=n_news, to_filter=to_filter)
         return jsonify(out_json)
 
     def route(self):

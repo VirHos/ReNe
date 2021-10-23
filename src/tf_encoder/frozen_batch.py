@@ -3,9 +3,9 @@ import numpy as np
 
 from typing import List
 from utils import batch
-from frozen import FrozenTFModel
+from tf_encoder.frozen import FrozenTFModel
 from tensorflow.keras.utils import Progbar
-from wordpiece_tokenizer.modules import build_preprocessor
+from wp.core import build_preprocessor
 
 
 class FrozenBatchedTFModel(FrozenTFModel):
@@ -105,8 +105,7 @@ class FrozenBert(FrozenBatchedTFModel):
         preprocessor = build_preprocessor(
                 self.config['vocab_path'],
                 self.config['seq_len'],
-                self.config['do_lower_case'],
-                self.config.get('return_tokenization_map', False))
+                self.config['do_lower_case'])
         return preprocessor
 
     def __call__(self, input_arrays: List[np.array], verbose=False) -> np.ndarray:

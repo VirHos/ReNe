@@ -1,21 +1,19 @@
 # cache all question representations in encoder object
 import os
 import numpy as np
-from utils import batches
+from utils import batch
 from tensorflow.keras.utils import Progbar
-from utils import get_padded
+
 from utils import load_graph, yaml_load
-from frozen_batch import FrozenBert, FrozenBatchedTFModel
+from tf_encoder.frozen_batch import FrozenBert, FrozenBatchedTFModel
 
 
 def get_nlu_executor(config, bsize=128):
-    vocab = os.path.join(config['static_path'], config['vocab'])
-    cfg = yaml_load(os.path.join(config['static_path'], config['nlu_config']))
-    cfg['batch_size'] = config.get('batch_size', bsize)
-    model_path = os.path.join(config['static_path'], cfg['model_path'])
+    vocab = os.path.join(config['vocab'])
+    model_path = os.path.join(config['model_path'])
     nlu_graph = load_graph(model_path)
     nlu_executor = FrozenBert(
-        nlu_graph, vocab_path = vocab, **cfg)
+        nlu_graph, vocab_path = vocab, **config['nlu_config'])
     return nlu_executor
 
 def get_state_encoder(config, nlu_executor):
@@ -44,7 +42,7 @@ class StackedEncoder:
 
 class CacheEncoder:
 
-    def __init__(self, base_encoder, sents=None, vectors=None, dim=(1024,), dtype='float32', preprocessor=None, bsize=128):
+    def __init__(self, base_encoder, sents=None, vectors=None, dim=(768,), dtype='float32', preprocessor=None, bsize=128):
         self.cached_vectors = vectors
         self.dim = dim
         self.stoid = {}
@@ -60,7 +58,7 @@ class CacheEncoder:
             self.cached_vectors = vectors
 
     def encode_new(self, texts, verbose):
-        bgen = batches(texts, n=self.bsize)
+        bgen = batch(texts, n=self.bsize)
 
         bar = Progbar(len(texts))
         encoded = []
@@ -73,7 +71,7 @@ class CacheEncoder:
         mat = np.vstack(encoded).astype(self._dtype)
         return mat
 
-    def __call__(self, texts, verbose=False, wo_vstack=False):
+    def __call__(self, texts, verbose=False):
         if self.preprocessor:
             texts = list(map(self.preprocessor, texts))
         new_cache_np = np.zeros((len(texts), *list(self.dim)), self._dtype)

@@ -10,6 +10,7 @@ def main(config):
     st.sidebar.write("""Демо рекомендательной системы новостей для пользователей mos.ru и приложения “Моя Москва”""")
     st.sidebar.header('Меню')
     n_news = st.sidebar.number_input(label='Выберите количество рекомендуемых новостей', min_value= 1, max_value= 20, value= 3)
+    flt = st.sidebar.radio("Фильтровать выдачу", ('Да', 'Нет'))
 
     #rene = build_rene(config)
 
@@ -20,7 +21,8 @@ def main(config):
 
     get_pred = st.button('Анализировать')
     if get_pred:
-        js = requests.get('http://rene:5000/get_news', params={'user_id': str(user_id), 'n_news': n_news})
+        fl = 'Да'== flt
+        js = requests.get('http://rene:5000/get_news', params={'user_id': str(user_id), 'n_news': n_news,'filter':fl})
         preds_dict = json.loads(js.content)
         st.subheader('Последняя прочитанная новость')
         st.write(preds_dict['history'][-1])

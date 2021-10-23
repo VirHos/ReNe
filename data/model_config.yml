@@ -1,0 +1,13 @@
+nlu_config:
+  input_tensors_names:
+    - "import/tok_input:0"
+    - "import/msk_input:0"
+    - "import/seg_input:0"
+  output_tensors_names:
+    - "import/final_encodes:0"
+  seq_len: 24
+  model_dim: 768
+  batch_size: 16
+  do_lower_case: False
+model_path: data/labse_enc_ru_en.pbtxt
+vocab: data/vocab.txt
