@@ -13,7 +13,7 @@ class Recommender:
     def get_history(self, user_id):
         return self.user_pr.get_history(user_id)
 
-    def get_news(self, user_id, n_news, top_k=32):
+    def get_news(self, user_id, n_news=5, top_k=32):
         user_input = self.user_pr.get_meta_info_user(user_id)
         user_history = self.user_pr.get_history(user_id)
         news_idx = self.retriever(user_input, top_k)

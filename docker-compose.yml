@@ -8,6 +8,7 @@ services:
       - ./data:/rene/data
     environment:
       - 'PYTHONPATH=/rene/src'
-    entrypoint: streamlit run src/st_rene.py   
+    entrypoint: python3 src/rest_wrapper.py #streamlit run src/st_rene.py   
     ports:
       - "8501:8501"
+      - "5000:5000"
