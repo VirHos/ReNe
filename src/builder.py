@@ -6,6 +6,7 @@ from recommender import Recommender
 from retriever import Retriever
 from user_processor import UserProcessor
 from utils import *
+from filters import ComplexFilter
 
 
 def build_rene(config):
@@ -41,7 +42,7 @@ def build_rene(config):
 
     retriever = Retriever(index, encoder)
 
-    complex_filter = lambda x: x
+    complex_filter = ComplexFilter(user_pr,[])
 
     recomemnder = Recommender(retriever, user_pr, complex_filter)
     return recomemnder

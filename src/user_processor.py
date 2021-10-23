@@ -19,4 +19,14 @@ class UserProcessor:
         output =  [self.output_storage[idx] for idx in news_ids]
         return output
 
+    def get_seen_ids(self, user_id):
+        history = self.user_history_idx[user_id]
+        output =  [self.output_storage[idx]['id'] for idx in history]
+        return output
+
+    def get_last_date_for_user(self, user_id):
+        history = self.user_history_idx[user_id]
+        last_date = self.output_storage[history[-1]]['data']
+        return 
+
 
