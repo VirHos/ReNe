@@ -1,5 +1,0 @@
-pyyaml==5.1.2
-streamlit==0.82.0
-faiss-cpu==1.7.1.post2
-flask==1.0.2
-wordpiece_tokenizer==1.1
