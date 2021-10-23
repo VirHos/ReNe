@@ -1,9 +1,12 @@
+from typing import Dict, List
+
 class UserProcessor:
-    def __init__(self, news_dict, user_history_idx, meta_info, output_storage):
+    def __init__(self, news_dict, user_history_idx, meta_info, output_storage, url_to_index):
         self.news_dict = news_dict
         self.user_history_idx = user_history_idx
         self.meta_info = meta_info
         self.output_storage = output_storage
+        self.url_to_index = url_to_index
 
     def get_meta_info_user(self, user_id):
         history = self.user_history_idx[user_id]
@@ -27,6 +30,6 @@ class UserProcessor:
     def get_last_date_for_user(self, user_id):
         history = self.user_history_idx[user_id]
         last_date = self.output_storage[history[-1]]['data']
-        return 
+        return last_date
 
 

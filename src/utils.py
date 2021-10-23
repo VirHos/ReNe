@@ -1,5 +1,11 @@
 import faiss
 import yaml
+import json
+
+def json_load(fp):
+    with open(fp, 'r') as f:
+        js = json.loads(f.read())
+    return js
 
 def yaml_load(fpath: str):
     with open(fpath, 'r') as f:

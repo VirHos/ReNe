@@ -16,31 +16,34 @@ def build_rene(config):
     with open(config['user_history'], 'r') as f:
         users = json.loads(f.read())
 
-    meta_info = []
-    output_storage = []
+    meta_info = {}
+    output_storage = {}
+    output_idx_storage = []
     url_to_index = {}
 
     for ix, n in enumerate(news_dict):
-        output_storage.append({'id': n['id'],
+        output_storage[n['id']] = {'id': n['id'],
         'title':n['title'],
-        'data': n['date']})
+        'data': n['date']}
 
-        meta_info.append(get_meta_str(n))
+        output_idx_storage.append(n['id'])
 
-        url_to_index[n['url']] = ix
+        meta_info[n['id']] = get_meta_str(n)
+
+        url_to_index[n['url']] = n['id']
 
     user_history_idx = {k: [url_to_index[i] for i in v] for k,v in users.items()}
 
-    user_pr = UserProcessor(news_dict, user_history_idx, meta_info, output_storage)
+    user_pr = UserProcessor(news_dict, user_history_idx, meta_info, output_storage, url_to_index)
 
     encoder = Encoder(0,0)
 
-    news = np.array(meta_info)
+    news = np.array([meta_info[idx] for idx in output_idx_storage])
     news_embs = encoder(news)
 
     index = build_faiss_index(news_embs)
 
-    retriever = Retriever(index, encoder)
+    retriever = Retriever(index, encoder, np.array(output_idx_storage))
 
     complex_filter = ComplexFilter(user_pr,[])
 
