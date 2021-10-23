@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 data/*.xlsx 
 data/*.jsn 
+data/*.pbtxt 
+data/*.pkl 
 *.json
 *.ipynb
 
