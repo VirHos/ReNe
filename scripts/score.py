@@ -1,6 +1,10 @@
+import sys
+sys.path.append('/Users/ibragim/Documents/ReNe/src')
+
 from builder import build_rene
 from metrics import mapk, mapr
 from utils import json_load, yaml_load
+
 
 cfg = yaml_load("data/config.yml")
 

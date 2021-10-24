@@ -5,7 +5,7 @@ import pandas as pd
 
 def process_users_data():
     df = pd.read_json("data/news.jsn")
-    users = pd.read_excel("dataset_news_1.xlsx")
+    users = pd.read_excel("data/dataset_news_1.xlsx")
     url_title_di = dict(zip(df.url.values, df.title.values))
     users["url"] = users.url_clean.str.replace("mos.ru", "")
     users["title"] = users.url.map(url_title_di)

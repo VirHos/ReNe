@@ -5,8 +5,6 @@ cfg = yaml_load("data/config.yml")
 
 rene = build_rene(cfg)
 
-tr = json_load("data/train_user.json")
-
 meta_str_list = list(rene.user_pr.meta_info.values())
 
 embs = rene.retriever.encoder(meta_str_list, verbose=True)
