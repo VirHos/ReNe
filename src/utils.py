@@ -68,5 +68,5 @@ def get_meta_str(di):
     if di["sphere"]:
         sphere_str = "".join(["сфера: ", di["sphere"]["title"]])
 
-    meta_str = "; ".join(list(filter(None, [tags_str, themes_str, sphere_str])))
+    meta_str = " | ".join(list(filter(None, [tags_str, themes_str, sphere_str])))
     return meta_str if meta_str else di["title"]
