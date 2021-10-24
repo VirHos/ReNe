@@ -58,6 +58,7 @@ def build_rene(config: Dict, stub=False):
         logger.info('Loading encoder')
         tokenizer = AutoTokenizer.from_pretrained("cointegrated/LaBSE-en-ru")
         model = AutoModel.from_pretrained("cointegrated/LaBSE-en-ru")
+        model.eval()
         encoder = Encoder(tokenizer, model)
         encoder = CacheEncoder(encoder, cache["text"], cache["embs"])
         logger.info('Cache encoder is ready')

@@ -10,6 +10,7 @@ user_pr = build_user_processor(cfg)
 meta_str_list = list(user_pr.meta_info.values())
 tokenizer = AutoTokenizer.from_pretrained("cointegrated/LaBSE-en-ru")
 model = AutoModel.from_pretrained("cointegrated/LaBSE-en-ru")
+model.eval()
 encoder = Encoder(tokenizer, model)
 
 embs = encoder(meta_str_list)
