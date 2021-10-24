@@ -1,11 +1,15 @@
-from user_processor import UserProcessor
-from retriever import Retriever
 from filters import ComplexFilter
+from retriever import Retriever
+from user_processor import UserProcessor
 
 
 class Recommender:
-
-    def __init__(self, retriever: Retriever, user_pr: UserProcessor, complex_filter: ComplexFilter):
+    def __init__(
+        self,
+        retriever: Retriever,
+        user_pr: UserProcessor,
+        complex_filter: ComplexFilter,
+    ):
         self.retriever = retriever
         self.user_pr = user_pr
         self.complex_filter = complex_filter
@@ -21,4 +25,4 @@ class Recommender:
         output_news = self.user_pr.get_news_by_id(news_idx)
         if to_filter:
             output_news = self.complex_filter(output_news, user_id)
-        return {'recommendations': output_news[:n_news], 'history': user_history}
+        return {"recommendations": output_news[:n_news], "history": user_history}

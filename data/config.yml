@@ -1,4 +1,4 @@
 news_file: data/news.jsn
-user_history: data/user_history.json
+user_history: data/train_user.json
 model_config: data/model_config.yml
 cache_path: 'data/cache.pkl'

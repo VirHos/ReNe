@@ -1,11 +1,10 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import collections
-import unicodedata
-import numpy as np
 import re
+import unicodedata
+
+import numpy as np
 
 
 class FullTokenizer(object):
@@ -31,7 +30,7 @@ class FullTokenizer(object):
     def convert_ids_to_tokens(self, ids):
         return convert_by_vocab(self.inv_vocab, ids)
 
-    def mark_unk_tokens(self, tokens, unk_token='[UNK]'):
+    def mark_unk_tokens(self, tokens, unk_token="[UNK]"):
         return [t if t in self.vocab else unk_token for t in tokens]
 
 
@@ -123,14 +122,16 @@ class BasicTokenizer(object):
         # as is Japanese Hiragana and Katakana. Those alphabets are used to write
         # space-separated words, so they are not treated specially and handled
         # like the all of the other languages.
-        if ((cp >= 0x4E00 and cp <= 0x9FFF) or  #
-                (cp >= 0x3400 and cp <= 0x4DBF) or  #
-                (cp >= 0x20000 and cp <= 0x2A6DF) or  #
-                (cp >= 0x2A700 and cp <= 0x2B73F) or  #
-                (cp >= 0x2B740 and cp <= 0x2B81F) or  #
-                (cp >= 0x2B820 and cp <= 0x2CEAF) or
-                (cp >= 0xF900 and cp <= 0xFAFF) or  #
-                (cp >= 0x2F800 and cp <= 0x2FA1F)):  #
+        if (
+            (cp >= 0x4E00 and cp <= 0x9FFF)
+            or (cp >= 0x3400 and cp <= 0x4DBF)  #
+            or (cp >= 0x20000 and cp <= 0x2A6DF)  #
+            or (cp >= 0x2A700 and cp <= 0x2B73F)  #
+            or (cp >= 0x2B740 and cp <= 0x2B81F)  #
+            or (cp >= 0x2B820 and cp <= 0x2CEAF)  #
+            or (cp >= 0xF900 and cp <= 0xFAFF)
+            or (cp >= 0x2F800 and cp <= 0x2FA1F)  #
+        ):  #
             return True
 
         return False
@@ -140,7 +141,7 @@ class BasicTokenizer(object):
         output = []
         for char in text:
             cp = ord(char)
-            if cp == 0 or cp == 0xfffd or _is_control(char):
+            if cp == 0 or cp == 0xFFFD or _is_control(char):
                 continue
             if _is_whitespace(char):
                 output.append(" ")
@@ -208,7 +209,6 @@ class WordpieceTokenizer(object):
 
 
 class InputExample(object):
-
     def __init__(self, unique_id, text_a, text_b):
         self.unique_id = unique_id
         self.text_a = text_a
@@ -256,8 +256,12 @@ def _is_punctuation(char):
     # Characters such as "^", "$", and "`" are not in the Unicode
     # Punctuation class but we treat them as punctuation anyways, for
     # consistency.
-    if ((cp >= 33 and cp <= 47) or (cp >= 58 and cp <= 64) or
-            (cp >= 91 and cp <= 96) or (cp >= 123 and cp <= 126)):
+    if (
+        (cp >= 33 and cp <= 47)
+        or (cp >= 58 and cp <= 64)
+        or (cp >= 91 and cp <= 96)
+        or (cp >= 123 and cp <= 126)
+    ):
         return True
     cat = unicodedata.category(char)
     if cat.startswith("P"):
@@ -323,15 +327,31 @@ def whitespace_tokenize(text):
     return tokens
 
 
-def convert_lst_to_features(lst_str, max_seq_length, max_position_embeddings,
-                            tokenizer, logger, is_tokenized=False, mask_cls_sep=False):
+def convert_lst_to_features(
+    lst_str,
+    max_seq_length,
+    max_position_embeddings,
+    tokenizer,
+    logger,
+    is_tokenized=False,
+    mask_cls_sep=False,
+):
     """Loads a data file into a list of `InputBatch`s."""
 
-    examples = read_tokenized_examples(lst_str) if is_tokenized else read_examples(lst_str)
+    examples = (
+        read_tokenized_examples(lst_str) if is_tokenized else read_examples(lst_str)
+    )
 
-    _tokenize = lambda x: tokenizer.mark_unk_tokens(x) if is_tokenized else tokenizer.tokenize(x)
+    _tokenize = (
+        lambda x: tokenizer.mark_unk_tokens(x)
+        if is_tokenized
+        else tokenizer.tokenize(x)
+    )
 
-    all_tokens = [(_tokenize(ex.text_a), _tokenize(ex.text_b) if ex.text_b else []) for ex in examples]
+    all_tokens = [
+        (_tokenize(ex.text_a), _tokenize(ex.text_b) if ex.text_b else [])
+        for ex in examples
+    ]
 
     # user did not specify a meaningful sequence length
     # override the sequence length by the maximum seq length of the current batch
@@ -342,10 +362,12 @@ def convert_lst_to_features(lst_str, max_seq_length, max_position_embeddings,
         # case 2: Account for [CLS], tokens_a [SEP] -> 2 additional tokens
         max_seq_length += 3 if any(len(tb) for _, tb in all_tokens) else 2
         max_seq_length = min(max_seq_length, max_position_embeddings)
-        logger.warning('"max_seq_length" is undefined, '
-                       'and bert config json defines "max_position_embeddings"=%d. '
-                       'hence set "max_seq_length"=%d according to the current batch.' % (
-                           max_position_embeddings, max_seq_length))
+        logger.warning(
+            '"max_seq_length" is undefined, '
+            'and bert config json defines "max_position_embeddings"=%d. '
+            'hence set "max_seq_length"=%d according to the current batch.'
+            % (max_position_embeddings, max_seq_length)
+        )
 
     for (tokens_a, tokens_b) in all_tokens:
         if tokens_b:
@@ -356,7 +378,7 @@ def convert_lst_to_features(lst_str, max_seq_length, max_position_embeddings,
         else:
             # Account for [CLS] and [SEP] with "- 2"
             if len(tokens_a) > max_seq_length - 2:
-                tokens_a = tokens_a[0:(max_seq_length - 2)]
+                tokens_a = tokens_a[0 : (max_seq_length - 2)]
 
         # The convention in BERT is:
         # (a) For sequence pairs:
@@ -376,12 +398,14 @@ def convert_lst_to_features(lst_str, max_seq_length, max_position_embeddings,
         # For classification tasks, the first vector (corresponding to [CLS]) is
         # used as as the "sentence vector". Note that this only makes sense because
         # the entire model is fine-tuned.
-        tokens = ['[CLS]'] + tokens_a + ['[SEP]']
+        tokens = ["[CLS]"] + tokens_a + ["[SEP]"]
         input_type_ids = [0] * len(tokens)
-        input_mask = [int(not mask_cls_sep)] + [1] * len(tokens_a) + [int(not mask_cls_sep)]
+        input_mask = (
+            [int(not mask_cls_sep)] + [1] * len(tokens_a) + [int(not mask_cls_sep)]
+        )
 
         if tokens_b:
-            tokens += tokens_b + ['[SEP]']
+            tokens += tokens_b + ["[SEP]"]
             input_type_ids += [1] * (len(tokens_b) + 1)
             input_mask += [1] * len(tokens_b) + [int(not mask_cls_sep)]
 
@@ -397,18 +421,19 @@ def convert_lst_to_features(lst_str, max_seq_length, max_position_embeddings,
         assert len(input_mask) == max_seq_length
         assert len(input_type_ids) == max_seq_length
 
-        logger.debug('tokens: %s' % ' '.join([printable_text(x) for x in tokens]))
-        logger.debug('input_ids: %s' % ' '.join([str(x) for x in input_ids]))
-        logger.debug('input_mask: %s' % ' '.join([str(x) for x in input_mask]))
-        logger.debug('input_type_ids: %s' % ' '.join([str(x) for x in input_type_ids]))
+        logger.debug("tokens: %s" % " ".join([printable_text(x) for x in tokens]))
+        logger.debug("input_ids: %s" % " ".join([str(x) for x in input_ids]))
+        logger.debug("input_mask: %s" % " ".join([str(x) for x in input_mask]))
+        logger.debug("input_type_ids: %s" % " ".join([str(x) for x in input_type_ids]))
 
         yield InputFeatures(
             tokens=tokens,
             input_ids=input_ids,
             input_mask=input_mask,
-            input_type_ids=input_type_ids)
-        
-        
+            input_type_ids=input_type_ids,
+        )
+
+
 def convert_examples_to_features(examples, seq_length, tokenizer):
     """Loads a data file into a list of `InputBatch`s."""
 
@@ -428,7 +453,7 @@ def convert_examples_to_features(examples, seq_length, tokenizer):
         else:
             # Account for [CLS] and [SEP] with "- 2"
             if len(tokens_a) > seq_length - 2:
-                tokens_a = tokens_a[0:(seq_length - 2)]
+                tokens_a = tokens_a[0 : (seq_length - 2)]
 
         tokens = []
         input_type_ids = []
@@ -468,7 +493,9 @@ def convert_examples_to_features(examples, seq_length, tokenizer):
                 tokens=tokens,
                 input_ids=input_ids,
                 input_mask=input_mask,
-                input_type_ids=input_type_ids))
+                input_type_ids=input_type_ids,
+            )
+        )
     return features
 
 
@@ -516,14 +543,15 @@ def read_tokenized_examples(lst_strs):
         text_a = ss
         text_b = None
         try:
-            j = ss.index('|||')
+            j = ss.index("|||")
             text_a = ss[:j]
-            text_b = ss[(j + 1):]
+            text_b = ss[(j + 1) :]
         except ValueError:
             pass
         yield InputExample(unique_id=unique_id, text_a=text_a, text_b=text_b)
         unique_id += 1
-        
+
+
 def features_to_arrays(features):
     all_input_ids = []
     all_input_mask = []
@@ -534,9 +562,11 @@ def features_to_arrays(features):
         all_input_mask.append(feature.input_mask)
         all_segment_ids.append(feature.input_type_ids)
 
-    return (np.array(all_input_ids, dtype='int32'),
-            np.array(all_input_mask, dtype='int32'),
-            np.array(all_segment_ids, dtype='int32'))
+    return (
+        np.array(all_input_ids, dtype="int32"),
+        np.array(all_input_mask, dtype="int32"),
+        np.array(all_segment_ids, dtype="int32"),
+    )
 
 
 def build_preprocessor(voc_path, seq_len, lower=True):
@@ -554,4 +584,3 @@ def build_preprocessor(voc_path, seq_len, lower=True):
         return arrays
 
     return strings_to_arrays
-  

@@ -20,27 +20,36 @@ class FrozenTFModel:
         graph_ops = self._model_graph.get_operations()
         if not input_tensor_names:
             amount_of_inputs = config.get("amount_of_inputs", 1)
-            input_tensor_names = [self._get_tensor_name(op) for op in graph_ops[:amount_of_inputs]]
+            input_tensor_names = [
+                self._get_tensor_name(op) for op in graph_ops[:amount_of_inputs]
+            ]
         if not output_tensor_names:
             output_tensor_names = [self._get_tensor_name(graph_ops[-1])]
 
         self.logger = logging.getLogger(__name__ + self._name)
-        self._build(input_tensors_names=input_tensor_names,
-                    output_tensors_names=output_tensor_names)
+        self._build(
+            input_tensors_names=input_tensor_names,
+            output_tensors_names=output_tensor_names,
+        )
 
         self.logger.info("Model " + self._name + " is initialized.")
 
-    def _build(self, input_tensors_names: List[str],
-               output_tensors_names: List[str]) -> None:
+    def _build(
+        self, input_tensors_names: List[str], output_tensors_names: List[str]
+    ) -> None:
 
         self._input_tensors = []
         self._output_tensors = []
 
         for input_tensor_name in input_tensors_names:
-            self._input_tensors.append(self._model_graph.get_tensor_by_name(input_tensor_name))
+            self._input_tensors.append(
+                self._model_graph.get_tensor_by_name(input_tensor_name)
+            )
 
         for output_tensor_name in output_tensors_names:
-            self._output_tensors.append(self._model_graph.get_tensor_by_name(output_tensor_name))
+            self._output_tensors.append(
+                self._model_graph.get_tensor_by_name(output_tensor_name)
+            )
 
         self.session = tf.compat.v1.Session(graph=self._model_graph)
 
@@ -57,7 +66,7 @@ class FrozenTFModel:
 
     @staticmethod
     def _get_tensor_name(op) -> str:
-        return op.name + ':0'
+        return op.name + ":0"
 
     @staticmethod
     def __get_shape(tensor_list: List[tf.Tensor]) -> List[tf.TensorShape]:
@@ -82,4 +91,3 @@ class FrozenTFModel:
             return lambda x: x
         else:
             return lambda x: [np.array(el, dtype=el.dtype) for el in x]
-
