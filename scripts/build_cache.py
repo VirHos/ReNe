@@ -1,12 +1,17 @@
-from builder import build_rene
+from transformers import AutoModel, AutoTokenizer
+from builder import build_user_processor
+
+from encoder import CacheEncoder, Encoder, SimpleEncoder
 from utils import json_load, pickle_dump, yaml_load
 
 cfg = yaml_load("data/config.yml")
 
-rene = build_rene(cfg)
+user_pr = build_user_processor(cfg)
+meta_str_list = list(user_pr.meta_info.values())
+tokenizer = AutoTokenizer.from_pretrained("cointegrated/LaBSE-en-ru")
+model = AutoModel.from_pretrained("cointegrated/LaBSE-en-ru")
+encoder = Encoder(tokenizer, model)
 
-meta_str_list = list(rene.user_pr.meta_info.values())
-
-embs = rene.retriever.encoder(meta_str_list, verbose=True)
+embs = encoder(meta_str_list)
 
 pickle_dump({"text": meta_str_list, "embs": embs}, "data/cache.pkl")

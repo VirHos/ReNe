@@ -89,10 +89,9 @@ class Encoder:
     embeddings = torch.nn.functional.normalize(embeddings)
     return embeddings
 
-
   def __call__(self, texts, bs=128):
     embs = []
-    for b in batch(texts, bs):
+    for b in tqdm(batch(texts, bs), total=len(texts)//bs):
       embs.append(self.embed(b))
     return torch.vstack(embs).numpy()
 

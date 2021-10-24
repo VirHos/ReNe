@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/Users/ibragim/Documents/ReNe/src')
+sys.path.append('src')
 
 from builder import build_rene
 from metrics import mapk, mapr

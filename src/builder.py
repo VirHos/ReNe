@@ -17,13 +17,39 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
-
-def build_rene(config: Dict, stub=False):
+def build_user_processor(config):
     news_dict = json_load(config["news_file"])
-
     users = json_load(config["user_history"])
 
+    meta_info = {}
+    output_storage = {}
+    url_to_index = {}
+
+    for ix, n in enumerate(news_dict):
+        output_storage[n["id"]] = {
+            "id": n["id"],
+            "title": n["title"],
+            "data": n["date"],
+        }
+
+        meta_info[n["id"]] = get_meta_str(n)
+
+        url_to_index[n["url"]] = n["id"]
+
+    user_history_idx = {k: [url_to_index[i] for i in v] for k, v in users.items()}
+    logger.info(f'{len(user_history_idx)} users prepared')
+
+    user_pr = UserProcessor(
+        news_dict, user_history_idx, meta_info, output_storage, url_to_index
+    )
+    return user_pr
+
+
+
+def build_rene(config: Dict, stub=False):
+
     cache = pickle_load(config["cache_path"])
+    user_pr = build_user_processor(config)
 
     if stub:
         logger.info('Run stub mode')
@@ -36,32 +62,8 @@ def build_rene(config: Dict, stub=False):
         encoder = CacheEncoder(encoder, cache["text"], cache["embs"])
         logger.info('Cache encoder is ready')
 
-    meta_info = {}
-    output_storage = {}
-    output_idx_storage = []
-    url_to_index = {}
-
-    for ix, n in enumerate(news_dict):
-        output_storage[n["id"]] = {
-            "id": n["id"],
-            "title": n["title"],
-            "data": n["date"],
-        }
-
-        output_idx_storage.append(n["id"])
-
-        meta_info[n["id"]] = get_meta_str(n)
-
-        url_to_index[n["url"]] = n["id"]
-
-    user_history_idx = {k: [url_to_index[i] for i in v] for k, v in users.items()}
-    logger.info(f'{len(user_history_idx)} users prepared')
-
-    user_pr = UserProcessor(
-        news_dict, user_history_idx, meta_info, output_storage, url_to_index
-    )
-
-    news = np.array([meta_info[idx] for idx in output_idx_storage])
+    output_idx_storage = list(user_pr.output_storage.keys())
+    news = np.array([user_pr.meta_info[idx] for idx in output_idx_storage])
     news_embs = encoder(news)
     logger.info(f'{len(news_embs)} news prepared')
     logger.info(f'faiss index building')
