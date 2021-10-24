@@ -1,5 +1,6 @@
 from typing import Any, Dict, List
 
+
 class UserProcessor:
     def __init__(
         self,

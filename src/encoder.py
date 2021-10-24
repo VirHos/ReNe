@@ -38,8 +38,8 @@ class CacheEncoder:
         bgen = batch(texts, n=self.bsize)
 
         encoded = []
-        if verbose :
-            bgen = tqdm(bgen, total=len(texts)//self.bsize)
+        if verbose:
+            bgen = tqdm(bgen, total=len(texts) // self.bsize)
         for bt in bgen:
             enc = self.encoder(bt)
             encoded.append(enc)
@@ -76,24 +76,28 @@ class CacheEncoder:
 
         return new_cache_np
 
+
 class Encoder:
-  def __init__(self, tok, model):
-    self.tok = tok
-    self.model = model
+    def __init__(self, tok, model):
+        self.tok = tok
+        self.model = model
 
-  def embed(self, texts):
-    t = self.tok.batch_encode_plus(texts, padding=True, truncation=True, return_tensors='pt')
-    with torch.no_grad():
-        model_output = self.model(**t)
-    embeddings = model_output.pooler_output
-    embeddings = torch.nn.functional.normalize(embeddings)
-    return embeddings
+    def embed(self, texts):
+        t = self.tok.batch_encode_plus(
+            texts, padding=True, truncation=True, return_tensors="pt"
+        )
+        with torch.no_grad():
+            model_output = self.model(**t)
+        embeddings = model_output.pooler_output
+        embeddings = torch.nn.functional.normalize(embeddings)
+        return embeddings
 
-  def __call__(self, texts, bs=128):
-    embs = []
-    for b in tqdm(batch(texts, bs), total=len(texts)//bs):
-      embs.append(self.embed(b))
-    return torch.vstack(embs).numpy()
+    def __call__(self, texts, bs=128):
+        embs = []
+        for b in tqdm(batch(texts, bs), total=len(texts) // bs):
+            embs.append(self.embed(b))
+        return torch.vstack(embs).numpy()
+
 
 class SimpleEncoder:
     def __init__(self, texts: List[str], embs: np.array):
