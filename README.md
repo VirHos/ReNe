@@ -54,3 +54,8 @@ Submission
 
 Код генерации решения задачи (.csv)
 https://colab.research.google.com/drive/1cd3tzmFy2F9V8blZ-P168PzyYc9n1kpG?usp=sharing
+
+
+### Запуск демо
+запустить скрипт get_data.sh для выкачки файлов  
+запустить run.sh чтобы поднять докер
