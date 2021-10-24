@@ -19,7 +19,7 @@ preds = [
 ]
 y_ts = [[rene.user_pr.url_to_index[i] for i in v] for k, v in ts.items()]
 
-pr = mapk(y_ts, preds, 20)
+pr = mapk(y_ts, preds, 5)
 rc = mapr(y_ts, preds, 20)
 print(f"Recall: {rc}")
 print(f"Precision: {pr}")

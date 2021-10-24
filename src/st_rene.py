@@ -4,7 +4,6 @@ import pandas as pd
 import requests
 import streamlit as st
 
-from builder import build_rene
 from utils import yaml_load
 
 

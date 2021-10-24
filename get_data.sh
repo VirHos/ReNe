@@ -5,3 +5,4 @@ wget https://transfer.sh/KH4ezU/areas.json -q
 wget https://transfer.sh/kORtrM/user_history.json -q
 wget https://transfer.sh/40vpzc/labse_enc_ru_en.pbtxt -q
 wget https://transfer.sh/pCNc00/cache.pkl -q
+wget https://transfer.sh/stFo1k/train_user.json
