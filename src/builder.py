@@ -9,15 +9,17 @@ from encoder import CacheEncoder, Encoder, SimpleEncoder
 from filters import ComplexFilter
 from recommender import Recommender
 from retriever import Retriever
+from tf_encoder.cache_encoder import CacheEncoder, get_nlu_executor, get_state_encoder
 from user_processor import UserProcessor
 from utils import build_faiss_index, get_meta_str, json_load, pickle_load, yaml_load
+
+import logging
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
 logger = logging.getLogger(__name__)
-
 
 def build_user_processor(config):
     news_dict = json_load(config["news_file"])
@@ -48,6 +50,22 @@ def build_user_processor(config):
 
 
 def build_rene(config: Dict, stub=False):
+    cache = pickle_load(config["cache_path"])
+    user_pr = build_user_processor(config)
+
+    if stub:
+        encoder = SimpleEncoder(cache["text"], cache["embs"])
+    else:
+        model_config = yaml_load(config["model_config"])
+        nlu = get_nlu_executor(model_config)
+        encoder = CacheEncoder(nlu, cache["text"], cache["embs"])
+        ctx_model = get_state_encoder(model_config, nlu)
+
+    output_idx_storage = list(user_pr.output_storage.keys())
+    news = np.array([user_pr.meta_info[idx] for idx in output_idx_storage])
+    news_embs = encoder(news)
+
+def build_rene(config: Dict, stub=False):
 
     cache = pickle_load(config["cache_path"])
     user_pr = build_user_processor(config)
@@ -72,7 +90,7 @@ def build_rene(config: Dict, stub=False):
     index = build_faiss_index(news_embs)
     logger.info(f"faiss index is ready")
 
-    retriever = Retriever(index, encoder, np.array(output_idx_storage))
+    retriever = Retriever(index, ctx_model, np.array(output_idx_storage))
 
     complex_filter = ComplexFilter(user_pr)
 

@@ -6,6 +6,8 @@ data/*.xlsx
 data/*.jsn 
 data/*.pbtxt 
 data/*.pkl 
+data/*.csv 
+data/*.h5
 *.json
 *.ipynb
 

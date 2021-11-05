@@ -25,5 +25,4 @@ class ComplexFilter:
 
     def __call__(self, pred, user):
         filtered = self.filter_seen_articles(pred, user)
-        filtered_by_date = self.filter_old(filtered, user)
-        return filtered_by_date
+        return filtered

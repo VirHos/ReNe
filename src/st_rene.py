@@ -32,8 +32,9 @@ def main(config):
             params={"user_id": str(user_id), "n_news": n_news, "filter": fl},
         )
         preds_dict = json.loads(js.content)
-        st.subheader("Последняя прочитанная новость")
-        st.write(preds_dict["history"][-1])
+        if preds_dict["history"]:
+            st.subheader("Последняя прочитанная новость")
+            st.write(preds_dict["history"][-1])
 
         st.subheader("output json")
         st.write(preds_dict)
