@@ -1,6 +1,5 @@
 from typing import Dict, List, Any
 
-
 class UserProcessor:
     def __init__(
         self,
@@ -17,12 +16,12 @@ class UserProcessor:
         self.url_to_index = url_to_index
 
     def get_meta_info_user(self, user_id):
-        history = self.user_history_idx[user_id]
+        history = self.user_history_idx.get(user_id, [])
         meta_str_history = [self.meta_info[idx] for idx in history]
         return meta_str_history
 
     def get_history(self, user_id):
-        history = self.user_history_idx[user_id]
+        history = self.user_history_idx.get(user_id, [])
         output = [self.output_storage[idx] for idx in history]
         return output
 
@@ -31,11 +30,11 @@ class UserProcessor:
         return output
 
     def get_seen_ids(self, user_id):
-        history = self.user_history_idx[user_id]
+        history = self.user_history_idx.get(user_id, [])
         output = [self.output_storage[idx]["id"] for idx in history]
         return output
 
     def get_last_date_for_user(self, user_id):
-        history = self.user_history_idx[user_id]
+        history = self.user_history_idx.get(user_id, [])
         last_date = self.output_storage[history[-1]]["data"]
         return last_date

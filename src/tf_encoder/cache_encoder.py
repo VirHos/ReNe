@@ -33,7 +33,7 @@ class StackedEncoder:
         self.ctx_model = ctx_model
 
     def __call__(self, sents):
-        emb = self.labse.get_embs(sents)['sentence_embs']
+        emb = self.labse(sents)
         reshaped = emb.reshape((1, emb.shape[0], emb.shape[1]))
         user_emb = self.ctx_model.predict(reshaped)
         return user_emb

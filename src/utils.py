@@ -63,7 +63,8 @@ def get_meta_str(di):
         tags = [t["title"] for t in di["tags"]]
         tags_str = "".join(["просмотренные теги:", ", ".join(tags).lower()])
     if di["sphere"]:
-        sphere_str = "".join(["просмотренные сферы:", di["sphere"]["title"]]).lower()
+        spheres = [t["title"] for t in di["spheres"]]
+        sphere_str = "".join(["просмотренные сферы:", ", ".join(spheres).lower()])
 
     meta_str = ". ".join(list(filter(None, [tags_str, sphere_str])))
     return meta_str
