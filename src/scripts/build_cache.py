@@ -4,7 +4,7 @@ from tf_encoder.cache_encoder import get_nlu_executor
 
 cfg = yaml_load("data/config.yml")
 
-rene = build_rene(cfg, True)
+rene = build_rene(cfg)
 
 nlu = get_nlu_executor(yaml_load("data/model_config.yml"))
 

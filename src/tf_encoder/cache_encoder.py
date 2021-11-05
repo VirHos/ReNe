@@ -4,41 +4,39 @@ import os
 import numpy as np
 from tensorflow.keras.utils import Progbar
 
-from tf_encoder.frozen_batch import FrozenBatchedTFModel, FrozenBert
+from tf_encoder.frozen_labse import LaBSE, build_ctx_model
+from tf_encoder.text_preprocessing import FullTokenizer
 from utils import batch, load_graph, yaml_load
 
 
-def get_nlu_executor(config, bsize=128):
+def get_nlu_executor(config):
     vocab = os.path.join(config["vocab"])
     model_path = os.path.join(config["model_path"])
-    nlu_graph = load_graph(model_path)
-    nlu_executor = FrozenBert(nlu_graph, vocab_path=vocab, **config["nlu_config"])
+    seq_len = config.get("seq_len",24)
+    tokenizer = FullTokenizer(vocab_file=vocab, do_lower_case=True)
+    nlu_executor = LaBSE(model_path=model_path,
+            tokenizer=tokenizer,
+            seq_len=seq_len)
     return nlu_executor
 
 
 def get_state_encoder(config, nlu_executor):
-    cfg = yaml_load(os.path.join(config["static_path"], config["scu_config"]))
-    cfg["batch_size"] = 96
-    model_path = os.path.join(config["static_path"], cfg["model_path"])
-    scu_graph = load_graph(model_path)
-    scu_executor = FrozenBatchedTFModel(scu_graph, **cfg)
-
-    se = StackedEncoder(nlu_executor, scu_executor)
-    #     se = CacheEncoder(se)
+    ctx_model= build_ctx_model()
+    ctx_model.load_weights(config["ctx_model"])
+    se = StackedEncoder(nlu_executor, ctx_model)
     return se
 
 
 class StackedEncoder:
-    def __init__(self, nlu, scu):
-        self.nlu = nlu
-        self.scu = scu
+    def __init__(self, labse, ctx_model):
+        self.labse = labse
+        self.ctx_model = ctx_model
 
-    def __call__(self, list_of_ctx, verbose=False, ctx_size=6):
-        flatten = np.hstack(list_of_ctx)
-        nlu_emb = self.nlu(flatten, verbose)
-        nlu_emb_reshaped = nlu_emb  # .reshape((1, nlu_emb.shape[0], nlu_emb.shape[1]))
-        states = self.scu(nlu_emb_reshaped, verbose)
-        return states[: len(list_of_ctx)]
+    def __call__(self, sents):
+        emb = self.labse.get_embs(sents)['sentence_embs']
+        reshaped = emb.reshape((1, emb.shape[0], emb.shape[1]))
+        user_emb = self.ctx_model.predict(reshaped)
+        return user_emb
 
 
 class CacheEncoder:
