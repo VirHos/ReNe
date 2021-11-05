@@ -29,8 +29,6 @@ def main(config):
     get_pred = st.button("Анализировать")
     if get_pred:
         fl = int("Да" == flt)
-        st.write(fl)
-        st.write(flt)
         js = requests.get(
             "http://rene:5000/get_news",
             params={"user_id": str(user_id), "n_news": n_news, "filter": fl},
