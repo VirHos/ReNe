@@ -2,10 +2,7 @@ import logging
 from typing import Dict
 
 import numpy as np
-from transformers import AutoModel, AutoTokenizer
 
-# from tf_encoder.cache_encoder import CacheEncoder, get_nlu_executor
-from encoder import CacheEncoder, Encoder, SimpleEncoder
 from filters import ComplexFilter
 from recommender import Recommender
 from retriever import Retriever
@@ -49,41 +46,18 @@ def build_user_processor(config):
     return user_pr
 
 
-def build_rene(config: Dict, stub=False):
+def build_rene(config: Dict):
     cache = pickle_load(config["cache_path"])
     user_pr = build_user_processor(config)
-
-    if stub:
-        encoder = SimpleEncoder(cache["text"], cache["embs"])
-    else:
-        model_config = yaml_load(config["model_config"])
-        nlu = get_nlu_executor(model_config)
-        encoder = CacheEncoder(nlu, cache["text"], cache["embs"])
-        ctx_model = get_state_encoder(model_config, nlu)
+    model_config = yaml_load(config["model_config"])
+    nlu = get_nlu_executor(model_config)
+    encoder = CacheEncoder(nlu, cache["text"], cache["embs"])
+    ctx_model = get_state_encoder(model_config, nlu)
 
     output_idx_storage = list(user_pr.output_storage.keys())
     news = np.array([user_pr.meta_info[idx] for idx in output_idx_storage])
     news_embs = encoder(news)
 
-def build_rene(config: Dict, stub=False):
-
-    cache = pickle_load(config["cache_path"])
-    user_pr = build_user_processor(config)
-
-    if stub:
-        logger.info("Run stub mode")
-        encoder = SimpleEncoder(cache["text"], cache["embs"])
-    else:
-        logger.info("Loading encoder")
-        tokenizer = AutoTokenizer.from_pretrained("cointegrated/LaBSE-en-ru")
-        model = AutoModel.from_pretrained("cointegrated/LaBSE-en-ru")
-        model.eval()
-        encoder = Encoder(tokenizer, model)
-        encoder = CacheEncoder(encoder, cache["text"], cache["embs"])
-        logger.info("Cache encoder is ready")
-
-    output_idx_storage = list(user_pr.output_storage.keys())
-    news = np.array([user_pr.meta_info[idx] for idx in output_idx_storage])
     news_embs = encoder(news)
     logger.info(f"{len(news_embs)} news prepared")
     logger.info(f"faiss index building")

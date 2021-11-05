@@ -6,9 +6,10 @@ class Retriever:
         self.encoder = encoder
         self.index = index
         self.output_idx_storage = output_idx_storage
+        self.use_last = use_last
 
-    def __call__(self, user_input, n=5):
-        cut_user_input = user_input[-self.use_last :]
+    def __call__(self, user_input, n=16):
+        cut_user_input = user_input[-self.use_last:]
         slice = []
         if cut_user_input:
             user_emb = self.encoder(cut_user_input)
