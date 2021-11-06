@@ -32,7 +32,11 @@ class Recommender:
         return {"recommendations": output_news[:n_news], "history": user_history}
 
     def add_news_to_index(self, news_dict):
-        pass
+        news_idx = self.user_pr.add_new_news(news_dict)
+        meta_str = self.user_pr.meta_info[news_dict['id']]
+        status = self.retriever.add_news_to_index(meta_str, news_idx)
+        return status
 
     def add_news_for_user(self, user_id, news_id):
-        pass
+        status = self.user_pr.append_to_user_history(user_id, news_id)
+        return status

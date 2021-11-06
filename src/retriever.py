@@ -1,8 +1,8 @@
 import numpy as np
-
+from faiss import IndexFlatIP
 
 class Retriever:
-    def __init__(self, index, encoder, output_idx_storage: np.array, use_last=5):
+    def __init__(self, index: IndexFlatIP, encoder, output_idx_storage: np.array, use_last=5):
         self.encoder = encoder
         self.index = index
         self.output_idx_storage = output_idx_storage
@@ -16,3 +16,9 @@ class Retriever:
             dist, idx = self.index.search(user_emb, n)
             slice = idx[0]
         return self.output_idx_storage[slice]
+
+    def add_news_to_index(self, meta_str, news_idx):
+        meta_emb = self.encoder.labse_embed(meta_str)
+        self.output_idx_storage = np.append(self.output_idx_storage, news_idx)
+        self.index.add(meta_emb)
+        return 'ok'

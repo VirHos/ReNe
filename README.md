@@ -34,14 +34,12 @@
 Код и использованный стэк  
 https://github.com/ibragim-bad/ReNe
 
-transformers==4.4.0
 python==3.6  
 tensorflow==1.15  
 pyyaml==5.1.2  
 streamlit==0.82.0   
 faiss-cpu==1.7.1.post2  
 flask==1.0.2  
-tqdm  
 xlrd==1.1.0  
 
 ### Демо
@@ -58,3 +56,7 @@ Submission
 ### Запуск демо
 запустить скрипт get_data.sh для выкачки файлов  
 запустить run.sh чтобы поднять докер
+
+## Запуск сервиса в докере для инференса
+запустить скрипт get_data.sh для выкачки  файлов  
+запустить только сервис с rest оберткой - docker-compose up rene

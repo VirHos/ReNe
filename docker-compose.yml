@@ -9,6 +9,8 @@ services:
     environment:
       - 'PYTHONPATH=/rene/src'
     entrypoint: python3 src/rest_wrapper.py
+    ports:
+      - "5757:5757"
   st:
     build: .
     working_dir: '/rene'

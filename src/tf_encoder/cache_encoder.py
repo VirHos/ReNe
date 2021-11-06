@@ -36,6 +36,10 @@ class StackedEncoder:
         user_emb = self.ctx_model.predict(reshaped)
         return user_emb
 
+    def labse_embed(self, texts):
+        if type(texts) != list:
+            texts = [texts]
+        return self.labse(texts)
 
 class CacheEncoder:
     def __init__(

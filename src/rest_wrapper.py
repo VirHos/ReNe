@@ -10,6 +10,7 @@ class ApiHandler:
     def __init__(self, config: Dict[str, Any]):
         self.app = Flask(__name__)
         self.rene = build_rene(config)
+        self.config = config
 
     def get_news(self):
         user_id = str(request.args.get("user_id", "1"))
@@ -18,13 +19,9 @@ class ApiHandler:
         out_json = self.rene.get_news(user_id, n_news=n_news, to_filter=to_filter)
         return jsonify(out_json)
 
-    def route(self):
-        return "demo rest api"
-
     def run(self):
         self.app.add_url_rule("/get_news", view_func=self.get_news, methods=["GET"])
-        self.app.add_url_rule("/", view_func=self.route, methods=["GET"])
-        self.app.run(host="0.0.0.0", threaded=False)
+        self.app.run(host='0.0.0.0', port=self.config['port'],  threaded=False)
 
 
 if __name__ == "__main__":

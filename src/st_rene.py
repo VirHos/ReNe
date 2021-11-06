@@ -7,6 +7,7 @@ from utils import yaml_load
 
 
 def main(config):
+    port = config['port']
     st.sidebar.header("PyPyPy")
     st.sidebar.write(
         """Демо рекомендательной системы новостей для пользователей mos.ru и приложения “Моя Москва”"""
@@ -28,7 +29,7 @@ def main(config):
     if get_pred:
         fl = int("Да" == flt)
         js = requests.get(
-            "http://rene:5000/get_news",
+            f"http://rene:{port}/get_news",
             params={"user_id": str(user_id), "n_news": n_news, "filter": fl},
         )
         preds_dict = json.loads(js.content)
