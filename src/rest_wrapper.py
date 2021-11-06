@@ -14,7 +14,7 @@ class ApiHandler:
         self.config = config
 
     def get_news(self):
-        user_id = str(request.args.get("user_id", "1"))
+        user_id = int(request.args.get("user_id", 1))
         n_news = int(request.args.get("n_news", 5))
         to_filter = bool(int(request.args.get("filter", 1)))
         with timer(f"get n_news recs {n_news}"):
@@ -22,7 +22,7 @@ class ApiHandler:
         return jsonify(out_json)
 
     def append_to_history(self):
-        user_id = str(request.args.get("user_id", "1"))
+        user_id = int(request.args.get("user_id", 1))
         news_id = int(request.args.get("news_id", 5))
         with timer(f"add news for user history"):
             status = self.rene.add_news_for_user(user_id, news_id)

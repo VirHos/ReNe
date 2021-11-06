@@ -38,7 +38,7 @@ def build_user_processor(config):
 
         url_to_index[n["url"]] = n["id"]
 
-    user_history_idx = {k: [url_to_index[i] for i in v] for k, v in users.items()}
+    user_history_idx = {int(k): [url_to_index[i] for i in v] for k, v in users.items()}
     logger.info(f"{len(user_history_idx)} users prepared")
 
     user_pr = UserProcessor(

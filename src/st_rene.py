@@ -30,7 +30,7 @@ def main(config):
         fl = int("Да" == flt)
         js = requests.get(
             f"http://rene:{port}/get_news",
-            params={"user_id": str(user_id), "n_news": n_news, "filter": fl},
+            params={"user_id": int(user_id), "n_news": n_news, "filter": fl},
         )
         preds_dict = json.loads(js.content)
 
