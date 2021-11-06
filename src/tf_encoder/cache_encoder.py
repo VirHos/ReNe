@@ -12,16 +12,14 @@ from utils import batch, load_graph, yaml_load
 def get_nlu_executor(config):
     vocab = os.path.join(config["vocab"])
     model_path = os.path.join(config["model_path"])
-    seq_len = config.get("seq_len",24)
+    seq_len = config.get("seq_len", 24)
     tokenizer = FullTokenizer(vocab_file=vocab, do_lower_case=True)
-    nlu_executor = LaBSE(model_path=model_path,
-            tokenizer=tokenizer,
-            seq_len=seq_len)
+    nlu_executor = LaBSE(model_path=model_path, tokenizer=tokenizer, seq_len=seq_len)
     return nlu_executor
 
 
 def get_state_encoder(config, nlu_executor):
-    ctx_model= build_ctx_model()
+    ctx_model = build_ctx_model()
     ctx_model.load_weights(config["ctx_model"])
     se = StackedEncoder(nlu_executor, ctx_model)
     return se

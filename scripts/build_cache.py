@@ -12,9 +12,9 @@ cfg = yaml_load("data/config.yml")
 
 nlu = get_nlu_executor(yaml_load("data/model_config.yml"))
 
-print(f'start encoding: {len(meta_str_list)} news')
-embs= nlu(meta_str_list)
+print(f"start encoding: {len(meta_str_list)} news")
+embs = nlu(meta_str_list)
 fn = "data/cache.pkl"
 
 pickle_dump({"text": meta_str_list, "embs": embs}, fn)
-print(f'save cache to {fn}')
+print(f"save cache to {fn}")

@@ -21,7 +21,7 @@ def main(config):
     flt = st.sidebar.radio("Фильтровать выдачу", ("Да", "Нет"))
 
     user_id = st.number_input(
-        label="Введите user id", min_value=1, max_value=267, value=5
+        label="Введите user id", min_value=1, max_value=279, value=5
     )
 
     get_pred = st.button("Анализировать")

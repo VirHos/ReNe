@@ -6,17 +6,18 @@ import numpy as np
 from filters import ComplexFilter
 from recommender import Recommender
 from retriever import Retriever
-from tf_encoder.cache_encoder import CacheEncoder, get_nlu_executor, get_state_encoder
+from tf_encoder.cache_encoder import (CacheEncoder, get_nlu_executor,
+                                      get_state_encoder)
 from user_processor import UserProcessor
-from utils import build_faiss_index, get_meta_str, json_load, pickle_load, yaml_load
-
-import logging
+from utils import (build_faiss_index, get_meta_str, json_load, pickle_load,
+                   yaml_load)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
 logger = logging.getLogger(__name__)
+
 
 def build_user_processor(config):
     news_dict = json_load(config["news_file"])
@@ -58,7 +59,6 @@ def build_rene(config: Dict):
     news = np.array([user_pr.meta_info[idx] for idx in output_idx_storage])
     news_embs = encoder(news)
 
-    news_embs = encoder(news)
     logger.info(f"{len(news_embs)} news prepared")
     logger.info(f"faiss index building")
     index = build_faiss_index(news_embs)

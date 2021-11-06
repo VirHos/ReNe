@@ -34,5 +34,5 @@ class Recommender:
     def add_news_to_index(self, news_dict):
         pass
 
-    def add_news_for_user(self, user_id, news_dict):
+    def add_news_for_user(self, user_id, news_id):
         pass
