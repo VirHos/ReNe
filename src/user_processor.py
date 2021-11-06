@@ -4,13 +4,13 @@ from utils import get_meta_str
 class UserProcessor:
     def __init__(
         self,
-        news_dict: Dict[str, Any],
+        news_data: List[Dict],
         user_history_idx: Dict[str, Any],
         meta_info: Dict[str, Any],
         output_storage: Dict[str, Any],
         url_to_index: Dict[str, Any],
     ):
-        self.news_dict = news_dict
+        self.news_data = news_data
         self.user_history_idx = user_history_idx
         self.meta_info = meta_info
         self.output_storage = output_storage

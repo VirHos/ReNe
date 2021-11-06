@@ -4,7 +4,6 @@ from filters import ComplexFilter
 from retriever import Retriever
 from user_processor import UserProcessor
 
-
 class Recommender:
     def __init__(
         self,

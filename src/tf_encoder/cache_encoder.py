@@ -6,7 +6,7 @@ from tensorflow.keras.utils import Progbar
 
 from tf_encoder.frozen_labse import LaBSE, build_ctx_model
 from tf_encoder.text_preprocessing import FullTokenizer
-from utils import batch, load_graph, yaml_load
+from utils import batch, load_graph, yaml_load, timer
 
 
 def get_nlu_executor(config):
@@ -92,7 +92,7 @@ class CacheEncoder:
             if question in self.stoid:
                 old_cache_indices_list.append(self.stoid[question])
                 new_cache_indices_list.append(index)
-            else:
+            else:               
                 new_samples.append(question)
                 new_sample_indices.append(index)
 

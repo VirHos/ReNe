@@ -1,5 +1,6 @@
 import numpy as np
 from faiss import IndexFlatIP
+from utils import timer
 
 class Retriever:
     def __init__(self, index: IndexFlatIP, encoder, output_idx_storage: np.array, use_last=5):

@@ -4,6 +4,19 @@ import pickle
 import faiss
 import tensorflow as tf
 import yaml
+import logging
+import time
+from contextlib import contextmanager
+
+
+@contextmanager
+def timer(name, disable=False):
+    """Simple timer as context manager."""
+
+    start = time.time()
+    yield
+    if not disable:
+        logging.info(f'[{name}] done in {(time.time() - start)*1000:.1f} ms')
 
 
 def pickle_load(path):
@@ -62,7 +75,7 @@ def get_meta_str(di):
     if di["tags"]:
         tags = [t["title"] for t in di["tags"]]
         tags_str = "".join(["просмотренные теги:", ", ".join(tags).lower()])
-    if di["sphere"]:
+    if di["spheres"]:
         spheres = [t["title"] for t in di["spheres"]]
         sphere_str = "".join(["просмотренные сферы:", ", ".join(spheres).lower()])
 
