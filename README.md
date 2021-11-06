@@ -52,8 +52,7 @@ http://62.84.115.137:8501/
 
 Submission
 
-Код генерации решения задачи (.csv)
-https://colab.research.google.com/drive/1cd3tzmFy2F9V8blZ-P168PzyYc9n1kpG?usp=sharing
+[Код генерации решения задачи (.csv)](news2vec_inference.ipynb)
 
 
 ### Запуск демо
