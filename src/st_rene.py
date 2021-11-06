@@ -7,7 +7,7 @@ from utils import yaml_load
 
 
 def main(config):
-    port = config['port']
+    port = config["port"]
     st.sidebar.header("PyPyPy")
     st.sidebar.write(
         """Демо рекомендательной системы новостей для пользователей mos.ru и приложения “Моя Москва”"""

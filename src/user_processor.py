@@ -1,5 +1,7 @@
 from typing import Any, Dict, List
+
 from utils import get_meta_str
+
 
 class UserProcessor:
     def __init__(
@@ -41,16 +43,16 @@ class UserProcessor:
         return last_date
 
     def append_to_user_history(self, user_id, news_id):
-        status = 'ok'
+        status = "ok"
         if news_id not in self.output_storage:
-            status = 'unknown news id'
+            status = "unknown news id"
         else:
             if user_id in self.user_history_idx:
                 self.user_history_idx[user_id].append(news_id)
             else:
                 self.user_history_idx[user_id] = [news_id]
         return status
-    
+
     def add_new_news(self, news_dict):
         self.output_storage[news_dict["id"]] = {
             "id": news_dict["id"],

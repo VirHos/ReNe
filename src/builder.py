@@ -53,7 +53,9 @@ def build_rene(config: Dict):
     model_config = yaml_load(config["model_config"])
     nlu = get_nlu_executor(model_config)
     encoder = CacheEncoder(nlu, cache["text"], cache["embs"])
-    ctx_model = get_state_encoder(model_config, nlu)
+    ctx_model = get_state_encoder(model_config, encoder)
+    ##for warmup
+    ctx_model(["pad"] * 5)
 
     output_idx_storage = list(user_pr.output_storage.keys())
     news = np.array([user_pr.meta_info[idx] for idx in output_idx_storage])

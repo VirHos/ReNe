@@ -6,7 +6,7 @@ from tensorflow.keras.utils import Progbar
 
 from tf_encoder.frozen_labse import LaBSE, build_ctx_model
 from tf_encoder.text_preprocessing import FullTokenizer
-from utils import batch, load_graph, yaml_load, timer
+from utils import batch, load_graph, timer, yaml_load
 
 
 def get_nlu_executor(config):
@@ -41,6 +41,7 @@ class StackedEncoder:
             texts = [texts]
         return self.labse(texts)
 
+
 class CacheEncoder:
     def __init__(
         self,
@@ -60,6 +61,11 @@ class CacheEncoder:
         self.bsize = bsize
         self.preprocessor = preprocessor
         self.check_cache(sents, vectors)
+
+    def update_cache_sample(self, text, emb):
+        new_cache = np.vstack((self.cached_vectors, emb))
+        self.cached_vectors = new_cache
+        self.stoid[text] = len(self.cached_vectors) - 1
 
     def check_cache(self, sents, vectors):
         if sents is not None:
@@ -92,7 +98,7 @@ class CacheEncoder:
             if question in self.stoid:
                 old_cache_indices_list.append(self.stoid[question])
                 new_cache_indices_list.append(index)
-            else:               
+            else:
                 new_samples.append(question)
                 new_sample_indices.append(index)
 
